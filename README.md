@@ -41,14 +41,16 @@ Once your environment is activated, install your dependencies. For Node folks, t
 Once the packages have been downloaded, let's configure two environment variables. The first, `FLASK_APP`, is the entry point of our application. When we run `flask run`, Flask looks at the value of `FLASK_APP` for the proper file to execute. The second is our `API_KEY` which */config.py* uses so we can access the API-key in the application.
 
 ```bash
-$ export FLASK_APP=run.py
-$ export API_KEY=<yourkey>
+(timesenv) $ export FLASK_APP=run.py
+(timesenv) $ export API_KEY=<yourkey>
 ```
 
 
 ### Development
-Flask comes with a development server built-in,we just need to activate it by running the following:
+Flask comes with a development server built-in, it can be activated it by running the following:
 ```bash
-$ export FLASK_DEBUG=1
+(timesenv) $ export FLASK_DEBUG=1
 ```
 
+## How it works?
+This application is essentially a proxy server between the front-end application and the New York Times API. It makes use of Python's `requests` library to access the NYT API and the `jsonify` library to convery the response data. 
