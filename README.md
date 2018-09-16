@@ -25,8 +25,6 @@ I am also hosting this application on a rasperry-pi for debugging purposes and b
 <a name="getStarted"></a>
 ## Getting Started
 
-This application anticipates you to configure some environment variables. 
-
 ### Create a virtualenv
 First, create a virtual environment and activate it. For NodeJS folks, you can think of this as `npm init`.
 ```bash
@@ -35,12 +33,12 @@ $ source timesenv/bin/activate
 (timesenv) $
 ```
 
-Once your environment is active, install your dependencies. For Node folks, this is analagous to `npm i`.
+Once your environment is activated, install your dependencies. For Node folks, this is analagous to `npm i`.
 
 ```bash
 (timesenv) $ pip install requirements.txt
 ```
-Once the packages have been downloaded, let's configure two environment variables. The first, `FLASK_APP`, is the entry point of our application. When we run `flask run`, flask will look at the value of `FLASK_APP` for the file to execute.
+Once the packages have been downloaded, let's configure two environment variables. The first, `FLASK_APP`, is the entry point of our application. When we run `flask run`, Flask looks at the value of `FLASK_APP` for the proper file to execute. The second is our `API_KEY` which */config.py* uses so we can access the API-key in the application.
 
 ```bash
 $ export FLASK_APP=run.py
@@ -49,7 +47,7 @@ $ export API_KEY=<yourkey>
 
 
 ### Development
-Flask comes with a development server built-in,we just need to set an environment varibale
+Flask comes with a development server built-in,we just need to activate it by running the following:
 ```bash
 $ export FLASK_DEBUG=1
 ```
