@@ -15,6 +15,13 @@ I created a front-end application using React and Redux that allows users to int
 
 It was obvious I needed some form of back-end, and thus this simple Flask application. This app uses CORS and serves as nothing more than an intermediary between my front-end SPA (Singe Page Application) and the New York Times API.
 
+### Routes
+| Routes           | Description |
+|------------------|---------------------------------------------------------------|
+| GET /api/best    | Returns data for the New York Times Non-Fiction Best-Sellers. |
+| GET /api/popular | Returns the most emailed articles for the current day.|
+| GET /api/archives/\<month>/\<year> | Parses `month` and `year` args to make requests to the NYT archives, returns articles for the corresponding month and year|
+
 ### Why Flask?
 Considering all the time I've spent learning Express, why would I choose Flask for this project?
 
@@ -52,5 +59,19 @@ Flask comes with a development server built-in, it can be activated it by runnin
 (timesenv) $ export FLASK_DEBUG=1
 ```
 
+<a name="how"></a>
 ## How it works?
-This application is essentially a proxy server between the front-end application and the New York Times API. It makes use of Python's `requests` library to access the NYT API and the `jsonify` library to convery the response data. 
+This application is essentially a proxy server between the front-end application and the New York Times API. It makes use of Python's `requests` library to access the NYT API and the `jsonify` library to convery the response data.
+
+Here is the route used to grab the popular articles: 
+```python
+@app.route('/api/popular')
+def popular():
+  res = requests.get('https://api.nytimes.com/svc/mostpopular/v2/mostemailed/all-sections/1.json?api-key={0}'.format(app.config['API_KEY']))
+  if res.status_code != 200:
+    errData = {'status': res.status_code, 'error': 'There was an error'}
+    return jsonify(errData), res.status_code    
+  
+  popularData = jsonify(res.json())
+  return popularData
+```
