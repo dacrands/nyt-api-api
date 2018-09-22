@@ -1,7 +1,7 @@
 from app import app, db
 from flask import jsonify, request, redirect
 import requests
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 
 
@@ -38,6 +38,7 @@ def logout():
 
 
 @app.route('/api/popular')
+@login_required
 def popular():
     res = requests.get(
         'https://api.nytimes.com/svc/mostpopular/v2/mostemailed/all-sections/1.json?api-key={0}'
@@ -51,6 +52,7 @@ def popular():
 
 
 @app.route('/api/best')
+@login_required
 def best():
     res = requests.get(
         'https://api.nytimes.com/svc/books/v3/lists/current/hardcover-nonfiction.json?api-key={0}'
@@ -64,6 +66,7 @@ def best():
 
 
 @app.route('/api/archives/<month>/<year>')
+@login_required
 def archives(month, year):
     res = requests.get(
         'https://api.nytimes.com/svc/archive/v1/{0}/{1}.json?api-key={2}'.
