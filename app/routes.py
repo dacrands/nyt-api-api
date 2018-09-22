@@ -1,7 +1,7 @@
 from app import app, db
 from flask import jsonify, request, redirect
 import requests
-from flask_login import current_user, login_user
+from flask_login import current_user, login_user, logout_user
 from app.models import User
 
 
@@ -30,6 +30,11 @@ def login():
         return 'invalid'
     login_user(user, remember=request.form['remember_me'])
     return redirect('/api/popular')
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return 'logged out'
 
 
 @app.route('/api/popular')
