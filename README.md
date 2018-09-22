@@ -61,9 +61,9 @@ Flask comes with a development server built-in, it can be activated it by runnin
 
 <a name="how"></a>
 ## How it works?
-This application is essentially a proxy server between the front-end application and the New York Times API. It makes use of Python's `requests` library to access the NYT API and the `jsonify` library to convery the response data.
+This application is essentially a proxy server between the front-end application and the New York Times API. It makes use of Python's `requests` library to access the NYT API and the `jsonify` library to convert the response data.
 
-Here is the route used to grab the popular articles: 
+For example, here is the route used to grab the popular articles: 
 ```python
 @app.route('/api/popular')
 def popular():
@@ -76,4 +76,5 @@ def popular():
     return popularData
 ```
 
-Each route has similar error-handling logic, viz. checking the status code to ensure the request was successful. If the status code is not `200`, the client's response will be the status code of the unsuccessful request and will include an error object. For example, if the API-key is incorrect, the request to the NYT-API will respond with a `403` status-code. Whoever made the request would also receive status code of `403`, as opposed to the default status code of `200`.  
+### Error handling
+Each route has similar error-handling logic, viz. checking the status code to ensure the request was successful. If the status code is not `200`, the client's response will be the status code of the unsuccessful request and will include an error object. For example, if the API-key is incorrect, the request to the NYT-API will respond with a `403` status-code. Whoever made the request will also receive status code of `403`, as opposed to the default status code of `200`.  
