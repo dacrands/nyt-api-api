@@ -1,7 +1,9 @@
 from app import app, db
 from flask import jsonify, request, redirect
+import json
 import requests
 from flask_login import current_user, login_user, logout_user, login_required
+from flask_jwt_extended import create_access_token, jwt_required
 from app.models import User
 
 
@@ -20,16 +22,33 @@ def register():
     return 'register'
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+@app.route('/login', methods=['POST'])
+def login():    
+    jsonData = json.loads(request.data.decode('utf-8')) 
+    print('test1')   
     if current_user.is_authenticated:
-        return redirect('/api/popular')
-
-    user = User.query.filter_by(username=request.form['username']).first()
-    if user is None or not user.check_password(request.form['password']):
+        return redirect('/api/popular')    
+    print('test2')
+    user = User.query.filter_by(username=jsonData['username']).first()
+    print(user)
+    if user is None or not user.check_password(jsonData['password']):
+        print('invalid')
         return 'invalid'
-    login_user(user, remember=request.form['remember_me'])
-    return redirect('/api/popular')
+
+    print('test3')
+    access_token = create_access_token(identity=user.username)
+    print('test3')
+    # jwtData = jsonify(access_token=access_token)
+    # print(jwtData)
+    jwtData = json.dumps({"access_token" :access_token})
+    print(jwtData)
+    return jwtData
+
+    # print(type(request.data.decode('utf-8')))
+    # jsonData = json.loads(request.data.decode('utf-8'))
+    # print(type(jsonData))
+    # return 'login'
+
 
 @app.route('/logout')
 def logout():
@@ -38,7 +57,8 @@ def logout():
 
 
 @app.route('/api/popular')
-@login_required
+# @login_required
+@jwt_required
 def popular():
     res = requests.get(
         'https://api.nytimes.com/svc/mostpopular/v2/mostemailed/all-sections/1.json?api-key={0}'
