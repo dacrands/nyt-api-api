@@ -10,10 +10,13 @@ from app.models import User
 # =============
 #     AUTH
 # =============
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['POST'])
 def register():
-    user = User(username=request.form['username'], email=request.form['email'])
-    user.set_password(request.form['password'])
+    jsonData = json.loads(request.data.decode('utf-8'))
+
+    user = User(username=jsonData['username'])
+    user.set_password(jsonData['password'])
+    
     db.session.add(user)
     db.session.commit()
 
@@ -24,7 +27,8 @@ def login():
     if current_user.is_authenticated:
         return redirect('/api/popular')
         
-    jsonData = json.loads(request.data.decode('utf-8'))         
+    jsonData = json.loads(request.data.decode('utf-8'))  
+    print(jsonData)       
     user = User.query.filter_by(username=jsonData['username']).first()
     if user is None or not user.check_password(jsonData['password']):
         print('invalid')
@@ -43,6 +47,7 @@ def logout():
 @app.route('/api/popular')
 @jwt_required
 def popular():
+    
     res = requests.get(
         'https://api.nytimes.com/svc/mostpopular/v2/mostemailed/all-sections/1.json?api-key={0}'
         .format(app.config['API_KEY']))
