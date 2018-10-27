@@ -27,12 +27,12 @@ def login():
     if current_user.is_authenticated:
         return redirect('/api/popular')
         
-    jsonData = json.loads(request.data.decode('utf-8'))  
-    print(jsonData)       
+    jsonData = json.loads(request.data.decode('utf-8'))        
     user = User.query.filter_by(username=jsonData['username']).first()
-    if user is None or not user.check_password(jsonData['password']):
-        print('invalid')
+
+    if user is None or not user.check_password(jsonData['password']):        
         return 'invalid'
+    
     access_token = create_access_token(identity=user.username)
     jwtData = json.dumps({"access_token" :access_token})
 
@@ -41,23 +41,19 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
-
     return 'logged out'
 
 @app.route('/api/popular')
 @jwt_required
-def popular():
-    
+def popular():    
     res = requests.get(
         'https://api.nytimes.com/svc/mostpopular/v2/mostemailed/all-sections/1.json?api-key={0}'
         .format(app.config['API_KEY']))
     if res.status_code != 200:
         errData = {'status': res.status_code, 'error': 'There was an error'}
-
         return jsonify(errData), res.status_code
 
     popularData = jsonify(res.json())
-
     return popularData
 
 
@@ -77,8 +73,7 @@ def best():
 
 @app.route('/api/archives/<year>/<month>')
 @jwt_required
-def archives(month, year):
-    print(month)
+def archives(month, year):S
     res = requests.get(
         'https://api.nytimes.com/svc/archive/v1/{0}/{1}.json?api-key={2}'.
         format(year, month, app.config['API_KEY']))
